@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FiresharpCore.Extensions
+namespace FiresharpCore
 {
     public static class FiresharpExtensions
     {
