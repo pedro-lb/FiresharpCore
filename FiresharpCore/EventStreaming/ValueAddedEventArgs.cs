@@ -1,6 +1,6 @@
 using System;
 
-namespace FireSharp.Core.EventStreaming
+namespace FiresharpCore.EventStreaming
 {
     public class ValueAddedEventArgs : EventArgs
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace FireSharp.Core.Exceptions
+namespace FiresharpCore.Exceptions
 {
     public class FirebaseException : Exception
     {

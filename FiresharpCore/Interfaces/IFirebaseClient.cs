@@ -1,9 +1,9 @@
-﻿using FireSharp.Core.EventStreaming;
-using FireSharp.Core.Response;
+﻿using FiresharpCore.EventStreaming;
+using FiresharpCore.Response;
 using System;
 using System.Threading.Tasks;
 
-namespace FireSharp.Core.Interfaces
+namespace FiresharpCore.Interfaces
 {
     public interface IFirebaseClient : IDisposable
     {

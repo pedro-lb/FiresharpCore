@@ -1,11 +1,11 @@
-﻿using FireSharp.Core.Exceptions;
-using FireSharp.Core.Interfaces;
+﻿using FiresharpCore.Exceptions;
+using FiresharpCore.Interfaces;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
-namespace FireSharp.Core
+namespace FiresharpCore
 {
     internal class RequestManager : IRequestManager
     {

@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace FireSharp.Core.Interfaces
+namespace FiresharpCore.Interfaces
 {
     internal class JsonNetSerializer : ISerializer
     {

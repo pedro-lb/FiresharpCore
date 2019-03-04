@@ -1,13 +1,13 @@
-﻿using FireSharp.Core.EventStreaming;
-using FireSharp.Core.Exceptions;
-using FireSharp.Core.Interfaces;
-using FireSharp.Core.Response;
+﻿using FiresharpCore.EventStreaming;
+using FiresharpCore.Exceptions;
+using FiresharpCore.Interfaces;
+using FiresharpCore.Response;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace FireSharp.Core
+namespace FiresharpCore
 {
     public class FirebaseClient : IFirebaseClient
     {

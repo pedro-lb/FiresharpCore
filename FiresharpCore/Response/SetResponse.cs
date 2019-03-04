@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace FireSharp.Core.Response
+namespace FiresharpCore.Response
 {
     public class SetResponse : FirebaseResponse
     {

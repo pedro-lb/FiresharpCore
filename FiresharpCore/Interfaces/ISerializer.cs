@@ -1,4 +1,4 @@
-namespace FireSharp.Core.Interfaces
+namespace FiresharpCore.Interfaces
 {
     public interface ISerializer
     {

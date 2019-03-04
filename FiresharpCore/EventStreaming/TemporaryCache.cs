@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FireSharp.Core.EventStreaming
+namespace FiresharpCore.EventStreaming
 {
     internal sealed class TemporaryCache : IDisposable
     {

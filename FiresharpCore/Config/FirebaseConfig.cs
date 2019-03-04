@@ -1,7 +1,7 @@
-﻿using FireSharp.Core.Interfaces;
+﻿using FiresharpCore.Interfaces;
 using System;
 
-namespace FireSharp.Core.Config
+namespace FiresharpCore.Config
 {
     public class FirebaseConfig : IFirebaseConfig
     {
