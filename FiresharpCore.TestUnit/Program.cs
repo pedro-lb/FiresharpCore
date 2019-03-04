@@ -62,17 +62,17 @@ namespace FiresharpCore.TestUnit
         {
             void addedEvent(object sender, ValueAddedEventArgs args, object context)
             {
-                Console.WriteLine("Added: " + args.Data);
+                Console.WriteLine($"Added: {args.Path}");
             }
 
             void changedEvent(object sender, ValueChangedEventArgs args, object context)
             {
-                Console.WriteLine("Changed: " + args.Data);
+                Console.WriteLine($"Changed: {args.Path}");
             }
 
             void removedEvent(object sender, ValueRemovedEventArgs args, object context)
             {
-                Console.WriteLine("Removed: " + args.Path);
+                Console.WriteLine($"Removed: {args.Path}");
             }
 
             var listenEvent = firebaseApp.OnAsync(Path, addedEvent, changedEvent, removedEvent).GetAwaiter().GetResult();
