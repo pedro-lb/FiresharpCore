@@ -22,8 +22,8 @@ namespace FiresharpCore
 
         private QueryBuilder(string initialQuery = "")
         {
-            InitialQuery = initialQuery;
             InternalQuery = new Dictionary<string, object>();
+            InitialQuery = initialQuery;
         }
 
         public static QueryBuilder New(string initialQuery = "")
