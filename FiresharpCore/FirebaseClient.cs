@@ -90,11 +90,13 @@ namespace FiresharpCore
         {
             try
             {
-                var response = _requestManager.RequestAsync(HttpMethod.Put, path, data).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = _requestManager.RequestAsync(HttpMethod.Put, path, data).Result)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new SetResponse(content, response.StatusCode);
+                    return new SetResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -107,11 +109,14 @@ namespace FiresharpCore
             try
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
-                var response = _requestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
 
-                return new SetResponse(content, response.StatusCode);
+                using (var response = _requestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).Result)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    HandleIfErrorResponse(response.StatusCode, content);
+
+                    return new SetResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -123,10 +128,12 @@ namespace FiresharpCore
         {
             try
             {
-                var response = _requestManager.RequestAsync(HttpMethod.Post, path, data).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
-                return new PushResponse(content, response.StatusCode);
+                using (var response = _requestManager.RequestAsync(HttpMethod.Post, path, data).Result)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    HandleIfErrorResponse(response.StatusCode, content);
+                    return new PushResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -138,11 +145,13 @@ namespace FiresharpCore
         {
             try
             {
-                var response = _requestManager.RequestAsync(HttpMethod.Delete, path).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = _requestManager.RequestAsync(HttpMethod.Delete, path).Result)
+                {
+                    var content = response.Content.ReadAsStringAsync().Result;
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new FirebaseResponse(content, response.StatusCode);
+                    return new FirebaseResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -173,6 +182,7 @@ namespace FiresharpCore
             try
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
+
                 using (var response = _requestManager.RequestAsync(RequestManager.Patch, path, queryBuilder, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
@@ -227,11 +237,13 @@ namespace FiresharpCore
         {
             try
             {
-                var response = await _requestManager.RequestAsync(HttpMethod.Put, path, data).ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = await _requestManager.RequestAsync(HttpMethod.Put, path, data).ConfigureAwait(false))
+                {
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new SetResponse(content, response.StatusCode);
+                    return new SetResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -244,11 +256,14 @@ namespace FiresharpCore
             try
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
-                var response = await _requestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).ConfigureAwait(false);
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                HandleIfErrorResponse(response.StatusCode, content);
 
-                return new SetResponse(content, response.StatusCode);
+                using (var response = await _requestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).ConfigureAwait(false))
+                {
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    HandleIfErrorResponse(response.StatusCode, content);
+
+                    return new SetResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -291,11 +306,13 @@ namespace FiresharpCore
 
                 string path = $"users/{email}/password";
 
-                var response = _requestManager.RequestApiAsync(HttpMethod.Post, path, queryBuilder).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = _requestManager.RequestAsync(HttpMethod.Post, path, queryBuilder).GetAwaiter().GetResult())
+                {
+                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new FirebaseResponse(content, response.StatusCode);
+                    return new FirebaseResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -323,11 +340,13 @@ namespace FiresharpCore
 
                 string path = $"users/{email}/password";
 
-                var response = _requestManager.RequestApiAsync(HttpMethod.Put, path, queryBuilder).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = _requestManager.RequestApiAsync(HttpMethod.Put, path, queryBuilder).GetAwaiter().GetResult())
+                {
+                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new FirebaseResponse(content, response.StatusCode);
+                    return new FirebaseResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -350,11 +369,13 @@ namespace FiresharpCore
 
                 var path = "users";
 
-                var response = _requestManager.RequestApiAsync(HttpMethod.Post, path, queryBuilder).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = _requestManager.RequestApiAsync(HttpMethod.Post, path, queryBuilder).GetAwaiter().GetResult())
+                {
+                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new FirebaseResponse(content, response.StatusCode);
+                    return new FirebaseResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -380,11 +401,13 @@ namespace FiresharpCore
 
                 var path = $"users/{email}";
 
-                var response = _requestManager.RequestApiAsync(HttpMethod.Delete, path, queryBuilder).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = _requestManager.RequestApiAsync(HttpMethod.Delete, path, queryBuilder).GetAwaiter().GetResult())
+                {
+                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new FirebaseResponse(content, response.StatusCode);
+                    return new FirebaseResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
@@ -418,11 +441,13 @@ namespace FiresharpCore
 
                 var path = $"users/{oldEmail}/email";
 
-                var response = _requestManager.RequestApiAsync(HttpMethod.Put, path, queryBuilder).Result;
-                var content = response.Content.ReadAsStringAsync().Result;
-                HandleIfErrorResponse(response.StatusCode, content);
+                using (var response = _requestManager.RequestApiAsync(HttpMethod.Put, path, queryBuilder).GetAwaiter().GetResult())
+                {
+                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    HandleIfErrorResponse(response.StatusCode, content);
 
-                return new FirebaseResponse(content, response.StatusCode);
+                    return new FirebaseResponse(content, response.StatusCode);
+                }
             }
             catch (HttpRequestException ex)
             {
