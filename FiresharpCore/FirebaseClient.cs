@@ -11,19 +11,14 @@ namespace FiresharpCore
 {
     public class FirebaseClient : IFirebaseClient
     {
-        private readonly Action<HttpStatusCode, string> _defaultErrorHandler = (statusCode, body) =>
-        {
-            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
-            {
-                throw new FirebaseException(statusCode, body);
-            }
-        };
-
-        private readonly IRequestManager _requestManager;
-
         public FirebaseClient(IFirebaseConfig config)
             : this(new RequestManager(config))
         {
+        }
+
+        internal FirebaseClient(IRequestManager requestManager)
+        {
+            RequestManager = requestManager;
         }
 
         ~FirebaseClient()
@@ -31,10 +26,7 @@ namespace FiresharpCore
             Dispose(false);
         }
 
-        internal FirebaseClient(IRequestManager requestManager)
-        {
-            _requestManager = requestManager;
-        }
+        private readonly IRequestManager RequestManager;
 
         public void Dispose()
         {
@@ -46,15 +38,23 @@ namespace FiresharpCore
         {
             if (disposing)
             {
-                _requestManager.Dispose();
+                RequestManager.Dispose();
             }
         }
+
+        private readonly Action<HttpStatusCode, string> DefaultErrorHandler = (statusCode, body) =>
+        {
+            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
+            {
+                throw new FirebaseException(statusCode, body);
+            }
+        };
 
         public FirebaseResponse Get(string path)
         {
             try
             {
-                using (var response = _requestManager.RequestAsync(HttpMethod.Get, path).Result)
+                using (var response = RequestManager.RequestAsync(HttpMethod.Get, path).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -72,7 +72,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = _requestManager.RequestAsync(HttpMethod.Get, path, queryBuilder).Result)
+                using (var response = RequestManager.RequestAsync(HttpMethod.Get, path, queryBuilder).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -90,7 +90,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = _requestManager.RequestAsync(HttpMethod.Put, path, data).Result)
+                using (var response = RequestManager.RequestAsync(HttpMethod.Put, path, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -110,7 +110,7 @@ namespace FiresharpCore
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
 
-                using (var response = _requestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).Result)
+                using (var response = RequestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -128,7 +128,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = _requestManager.RequestAsync(HttpMethod.Post, path, data).Result)
+                using (var response = RequestManager.RequestAsync(HttpMethod.Post, path, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -145,7 +145,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = _requestManager.RequestAsync(HttpMethod.Delete, path).Result)
+                using (var response = RequestManager.RequestAsync(HttpMethod.Delete, path).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -163,7 +163,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = _requestManager.RequestAsync(RequestManager.Patch, path, data).Result)
+                using (var response = RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -183,7 +183,7 @@ namespace FiresharpCore
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
 
-                using (var response = _requestManager.RequestAsync(RequestManager.Patch, path, queryBuilder, data).Result)
+                using (var response = RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, queryBuilder, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -201,7 +201,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = await _requestManager.RequestAsync(HttpMethod.Get, path, queryBuilder).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(HttpMethod.Get, path, queryBuilder).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -219,7 +219,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = await _requestManager.RequestAsync(HttpMethod.Get, path).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(HttpMethod.Get, path).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -237,7 +237,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = await _requestManager.RequestAsync(HttpMethod.Put, path, data).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(HttpMethod.Put, path, data).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -257,7 +257,7 @@ namespace FiresharpCore
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
 
-                using (var response = await _requestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(HttpMethod.Put, path, queryBuilder, data).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -275,7 +275,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = await _requestManager.RequestAsync(HttpMethod.Post, path, data).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(HttpMethod.Post, path, data).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -289,161 +289,11 @@ namespace FiresharpCore
             }
         }
 
-        public FirebaseResponse ResetPassword(string email, string password)
-        {
-            try
-            {
-                QueryBuilder queryBuilder = QueryBuilder.New(
-                    $@"&email={Uri.EscapeDataString(email)}
-                    &_method=POST
-                    &transport=json
-                    &suppress_status_codes=true"
-                );
-
-                string path = $"users/{email}/password";
-
-                using (var response = _requestManager.RequestAsync(HttpMethod.Post, path, queryBuilder).GetAwaiter().GetResult())
-                {
-                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    HandleIfErrorResponse(response.StatusCode, content);
-
-                    return new FirebaseResponse(content, response.StatusCode);
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new FirebaseException(ex);
-            }
-        }
-
-        public FirebaseResponse ChangePassword(string email, string oldPassword, string newPassword)
-        {
-            try
-            {
-                QueryBuilder queryBuilder = QueryBuilder.New(
-                    $@"&email={Uri.EscapeDataString(email)}
-                    &oldPassword={Uri.EscapeDataString(oldPassword)}
-                    &newPassword={Uri.EscapeDataString(newPassword)}
-                    &_method=PUT&password={Uri.EscapeDataString(newPassword)}
-                    &v=node-2.3.2
-                    &transport=json
-                    &suppress_status_codes=true"
-                );
-
-                string path = $"users/{email}/password";
-
-                using (var response = _requestManager.RequestApiAsync(HttpMethod.Put, path, queryBuilder).GetAwaiter().GetResult())
-                {
-                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    HandleIfErrorResponse(response.StatusCode, content);
-
-                    return new FirebaseResponse(content, response.StatusCode);
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new FirebaseException(ex);
-            }
-        }
-
-        public FirebaseResponse CreateUser(string email, string password)
-        {
-            try
-            {
-                QueryBuilder queryBuilder = QueryBuilder.New(
-                    $@"&email={Uri.EscapeDataString(email)}
-                    &password={Uri.EscapeDataString(password)}
-                    &_method=POST
-                    &v=node-2.3.2
-                    &transport=json
-                    &suppress_status_codes=true"
-                );
-
-                var path = "users";
-
-                using (var response = _requestManager.RequestApiAsync(HttpMethod.Post, path, queryBuilder).GetAwaiter().GetResult())
-                {
-                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    HandleIfErrorResponse(response.StatusCode, content);
-
-                    return new FirebaseResponse(content, response.StatusCode);
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new FirebaseException(ex);
-            }
-        }
-
-        public FirebaseResponse RemoveUser(string email, string password)
-        {
-            try
-            {
-                QueryBuilder queryBuilder = QueryBuilder.New(
-                    $@"&email={Uri.EscapeDataString(email)}
-                    &password={Uri.EscapeDataString(password)}
-                    &_method=DELETE
-                    &transport=json
-                    &suppress_status_codes=true"
-                );
-
-                var path = $"users/{email}";
-
-                using (var response = _requestManager.RequestApiAsync(HttpMethod.Delete, path, queryBuilder).GetAwaiter().GetResult())
-                {
-                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    HandleIfErrorResponse(response.StatusCode, content);
-
-                    return new FirebaseResponse(content, response.StatusCode);
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new FirebaseException(ex);
-            }
-        }
-
-        public FirebaseResponse ChangeEmail(string oldEmail, string password, string newEmail)
-        {
-            try
-            {
-                QueryBuilder queryBuilder = QueryBuilder.New(
-                    string.Format(
-                        @"&oldEmail={0}
-                        &password={1}
-                        &newEmail={2}
-                        &_method=PUT
-                        &email={2}
-                        &v=node-2.3.2
-                        &transport=json
-                        &suppress_status_codes=true",
-                        Uri.EscapeDataString(oldEmail),
-                        Uri.EscapeDataString(password),
-                        Uri.EscapeDataString(newEmail)
-                    )
-                );
-
-                var path = $"users/{oldEmail}/email";
-
-                using (var response = _requestManager.RequestApiAsync(HttpMethod.Put, path, queryBuilder).GetAwaiter().GetResult())
-                {
-                    var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                    HandleIfErrorResponse(response.StatusCode, content);
-
-                    return new FirebaseResponse(content, response.StatusCode);
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                throw new FirebaseException(ex);
-            }
-        }
-
         public async Task<FirebaseResponse> DeleteAsync(string path)
         {
             try
             {
-                using (var response = await _requestManager.RequestAsync(HttpMethod.Delete, path).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(HttpMethod.Delete, path).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -461,7 +311,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = await _requestManager.RequestAsync(RequestManager.Patch, path, data).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, data).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -481,7 +331,7 @@ namespace FiresharpCore
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
 
-                using (var response = await _requestManager.RequestAsync(RequestManager.Patch, path, queryBuilder, data).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, queryBuilder, data).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -499,11 +349,11 @@ namespace FiresharpCore
             ValueRootAddedEventHandler<T> added = null)
         {
             return new EventRootResponse<T>(
-                await _requestManager
+                await RequestManager
                     .ListenAsync(path)
                     .ConfigureAwait(false),
                 added,
-                _requestManager,
+                RequestManager,
                 path
             );
         }
@@ -513,7 +363,7 @@ namespace FiresharpCore
             ValueRemovedEventHandler removed = null, object context = null)
         {
             return new EventStreamResponse(
-                await _requestManager
+                await RequestManager
                     .ListenAsync(path)
                     .ConfigureAwait(false),
                 added,
@@ -532,7 +382,7 @@ namespace FiresharpCore
             }
             else
             {
-                _defaultErrorHandler(statusCode, content);
+                DefaultErrorHandler(statusCode, content);
             }
         }
     }

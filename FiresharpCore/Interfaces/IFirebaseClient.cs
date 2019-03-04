@@ -41,16 +41,6 @@ namespace FiresharpCore.Interfaces
 
         FirebaseResponse Update<T>(string path, T data, string print);
 
-        FirebaseResponse CreateUser(string email, string password);
-
-        FirebaseResponse ChangeEmail(string oldEmail, string password, string newEmail);
-
-        FirebaseResponse RemoveUser(string email, string password);
-
-        FirebaseResponse ResetPassword(string email, string password);
-
-        FirebaseResponse ChangePassword(string email, string oldPassword, string newPassword);
-
         Task<EventStreamResponse> OnAsync(
             string path,
             ValueAddedEventHandler added = null,
