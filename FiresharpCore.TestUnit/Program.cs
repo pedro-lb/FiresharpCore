@@ -24,64 +24,56 @@ namespace FiresharpCore.TestUnit
         private static void ObjectTests(IFirebaseClient firebaseApp)
         {
             var itemIDs = new List<string>();
+            var items = new List<Item>();
 
-            var items = new List<Item>()
+            for (int i = 1; i <= 10; i++)
             {
-                new Item()
+                var random = new Random();
+
+                var itemPrice = random.Next(0, 1000);
+                var itemKey = random.Next();
+
+                items.Add(new Item
                 {
-                    Name = "Item X",
-                    Price = 100,
-                    Key = 1,
-                },
-                new Item()
-                {
-                    Name = "Item Y",
-                    Price = 250,
-                    Key = 2,
-                },
-                new Item()
-                {
-                    Name = "Item Z",
-                    Price = 500,
-                    Key = 3,
-                },
-            };
+                    Name = $"Item {itemKey}",
+                    Price = itemPrice,
+                    Key = itemKey,
+                });
+            }
 
             foreach (var item in items)
             {
                 var pushResponse = firebaseApp.Push(Path, item);
-
                 var itemId = pushResponse.GetID();
-
                 itemIDs.Add(itemId);
             }
 
             foreach (var itemId in itemIDs)
             {
                 var itemResponse = firebaseApp.Get(Path, QueryBuilder.New(itemId));
-
                 var itemResult = itemResponse.FirstOrDefault<Item>();
-
-                var itemsResult = itemResponse.ToList<Item>();
             }
+
+            var itemsResponse = firebaseApp.Get(Path);
+            var itemsResult = itemsResponse.ToList<Item>();
         }
 
         private static void ListenTests(IFirebaseClient firebaseApp)
         {
-            ValueAddedEventHandler addedEvent = (sender, args, context) =>
+            void addedEvent(object sender, ValueAddedEventArgs args, object context)
             {
                 Console.WriteLine("Added: " + args.Data);
-            };
+            }
 
-            ValueChangedEventHandler changedEvent = (sender, args, context) =>
+            void changedEvent(object sender, ValueChangedEventArgs args, object context)
             {
                 Console.WriteLine("Changed: " + args.Data);
-            };
+            }
 
-            ValueRemovedEventHandler removedEvent = (sender, args, context) =>
+            void removedEvent(object sender, ValueRemovedEventArgs args, object context)
             {
                 Console.WriteLine("Removed: " + args.Path);
-            };
+            }
 
             var listenEvent = firebaseApp.OnAsync(Path, addedEvent, changedEvent, removedEvent).GetAwaiter().GetResult();
         }

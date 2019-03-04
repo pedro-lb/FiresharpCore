@@ -1,16 +1,16 @@
 ﻿using FiresharpCore.Config;
 using FiresharpCore.Interfaces;
 using System;
+using System.Net;
 using System.Security;
 
 namespace FiresharpCore
 {
     public static class FiresharpFactory
     {
+        private static SecureString AuthSecret { get; set; } = new SecureString();
+        private static SecureString BasePath { get; set; } = new SecureString();
         private static bool HasConfigured { get; set; } = false;
-
-        private static SecureString AuthSecret { get; set; }
-        private static SecureString BasePath { get; set; }
 
         public static void Configure(string basePath, string authSecret)
         {
@@ -50,8 +50,8 @@ namespace FiresharpCore
 
             IFirebaseConfig config = new FirebaseConfig
             {
-                AuthSecret = AuthSecret.ToString(),
-                BasePath = BasePath.ToString(),
+                AuthSecret = new NetworkCredential(string.Empty, AuthSecret).Password,
+                BasePath = new NetworkCredential(string.Empty, BasePath).Password,
             };
 
             return new FirebaseClient(config);
