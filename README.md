@@ -1,4 +1,4 @@
-#   **Fire#**
+#   **Firesharp Core**
 
 ![](https://raw.githubusercontent.com/ziyasal/FireSharp/master/misc/logo.png)  
 
@@ -7,17 +7,8 @@ Firebase REST API wrapper for the .NET Core.
 Changes are sent to all subscribed clients automatically, so you can
 update your clients **in realtime** from the backend.
 
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/bj2sdp2a0w5095sv?svg=true)](https://ci.appveyor.com/project/ziyasal/firesharp) [![Coverage Status](https://coveralls.io/repos/github/ziyasal/FireSharp/badge.svg?branch=master)](https://coveralls.io/github/ziyasal/FireSharp?branch=master) [![Stories in Ready](https://badge.waffle.io/ziyasal/firesharp.svg?label=ready&title=Ready)](http://waffle.io/ziyasal/firesharp)  
-
-**IMPORTANT :** [**v1 docs**](https://github.com/ziyasal/FireSharp/wiki/v1-Docs) moved [here](https://github.com/ziyasal/FireSharp/wiki/v1-Docs).
-
-#### Installation (NuGet)
-```csharp
-//**Install**
-Install-Package FireSharp
-```
 ### Usage
-[FirebaseClient](https://github.com/ziyasal/FireSharp/blob/master/FireSharp/FirebaseClient.cs) uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) by default.
+This library uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) by default.
 
 #### How can I configure FireSharp?
 ------------------------------
@@ -86,17 +77,5 @@ EventStreamResponse response = await _client.OnAsync("chat", (sender, args, cont
 response.Dispose();
 ```
 
-## Release Notes
-**2.1**
-- Firesharp now is a Net Standard library, so it's available for every platform.
-
-
-**2.0**
-- Use Microsoft HTTP Client Libraries instead of RestSharp
-- FireSharp is now Portable Library
-- Supports Streaming from the REST API (Firebase REST endpoints support the EventSource / Server-Sent Events protocol.)
-- It is fully asynchronous and designed to be non-blocking 
-
-More information about Firebase and the Firebase API is available at the
 [official website](http://www.firebase.com/).
 
