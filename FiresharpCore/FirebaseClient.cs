@@ -291,10 +291,6 @@ namespace FiresharpCore
 
         public FirebaseResponse ResetPassword(string email, string password)
         {
-            /*
-                /v2/luminous-heat-7934/users/tedwards@hachisoft.com/password?&email=tedwards%40hachisoft.com&_method=POST&v=node-2.3.2&transport=json&suppress_status_codes=true
-             */
-
             try
             {
                 QueryBuilder queryBuilder = QueryBuilder.New(
@@ -322,10 +318,6 @@ namespace FiresharpCore
 
         public FirebaseResponse ChangePassword(string email, string oldPassword, string newPassword)
         {
-            /*
-                /v2/luminous-heat-7934/users/tedwards@hachisoft.com/password?&email=tedwards%40hachisoft.com&oldPassword=oldPassword&newPassword=newPassword&_method=PUT&password=newPassword&v=node-2.3.2&transport=json&suppress_status_codes=true
-             */
-
             try
             {
                 QueryBuilder queryBuilder = QueryBuilder.New(
@@ -385,10 +377,6 @@ namespace FiresharpCore
 
         public FirebaseResponse RemoveUser(string email, string password)
         {
-            /*
-                /v2/luminous-heat-7934/users/tedwards@hachisoft.com?&email=tedwards%40hachisoft.com&password=password&_method=DELETE&v=node-2.3.2&transport=json&suppress_status_codes=true
-            */
-
             try
             {
                 QueryBuilder queryBuilder = QueryBuilder.New(
@@ -417,10 +405,6 @@ namespace FiresharpCore
 
         public FirebaseResponse ChangeEmail(string oldEmail, string password, string newEmail)
         {
-            /*
-                /v2/luminous-heat-7934/users/tedwards@hachisoft.com/email?&oldEmail=tedwards%40hachisoft.com&password=password&newEmail=tedwards%40hachisoft.com&_method=PUT&email=tedwards%40hachisoft.com&v=node-2.3.2&transport=json&suppress_status_codes=true
-             */
-
             try
             {
                 QueryBuilder queryBuilder = QueryBuilder.New(
