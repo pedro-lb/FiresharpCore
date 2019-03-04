@@ -5,8 +5,6 @@ namespace FiresharpCore.Config
 {
     public class FirebaseConfig : IFirebaseConfig
     {
-        private string _basePath;
-
         public FirebaseConfig()
         {
             Serializer = new JsonNetSerializer();
@@ -16,13 +14,15 @@ namespace FiresharpCore.Config
         {
             get
             {
-                return _basePath.EndsWith("/") ? _basePath : $"{_basePath}/";
+                return RawBasePath.EndsWith("/") ? RawBasePath : $"{RawBasePath}/";
             }
             set
             {
-                _basePath = value;
+                RawBasePath = value;
             }
         }
+
+        private string RawBasePath { get; set; }
 
         public string Host { get; set; }
         public string AuthSecret { get; set; }

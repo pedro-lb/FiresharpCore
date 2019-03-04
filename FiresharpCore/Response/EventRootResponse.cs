@@ -12,21 +12,21 @@ namespace FiresharpCore.Response
 {
     public class EventRootResponse<T> : IDisposable
     {
-        private readonly ValueRootAddedEventHandler<T> _added;
-        private readonly CancellationTokenSource _cancel;
-        private readonly string _path;
-        private readonly Task _pollingTask;
-        private readonly IRequestManager _requestManager;
+        private ValueRootAddedEventHandler<T> ValueRootEventHandler { get; }
+        private CancellationTokenSource CancellationToken { get; }
+        private IRequestManager RequestManager { get; }
+        private Task PollingTask { get; }
+        private string Path { get; }
 
         internal EventRootResponse(HttpResponseMessage httpResponse, ValueRootAddedEventHandler<T> added,
             IRequestManager requestManager, string path)
         {
-            _requestManager = requestManager;
-            _added = added;
-            _path = path;
+            RequestManager = requestManager;
+            ValueRootEventHandler = added;
+            Path = path;
 
-            _cancel = new CancellationTokenSource();
-            _pollingTask = ReadLoop(httpResponse, _cancel.Token);
+            CancellationToken = new CancellationTokenSource();
+            PollingTask = ReadLoop(httpResponse, CancellationToken.Token);
         }
 
         ~EventRootResponse()
@@ -48,7 +48,7 @@ namespace FiresharpCore.Response
 
                             while (true)
                             {
-                                _cancel.Token.ThrowIfCancellationRequested();
+                                CancellationToken.Token.ThrowIfCancellationRequested();
 
                                 var read = await streamReader.ReadLineAsync().ConfigureAwait(false);
 
@@ -68,10 +68,10 @@ namespace FiresharpCore.Response
                                     }
 
                                     // Every change on child, will get entire object again.
-                                    var request = await _requestManager.RequestAsync(HttpMethod.Get, _path);
+                                    var request = await RequestManager.RequestAsync(HttpMethod.Get, Path);
                                     var jsonStr = await request.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                                    _added(this, jsonStr.ReadAs<T>());
+                                    ValueRootEventHandler(this, jsonStr.ReadAs<T>());
                                 }
 
                                 // start over
@@ -85,7 +85,7 @@ namespace FiresharpCore.Response
 
         public void Cancel()
         {
-            _cancel.Cancel();
+            CancellationToken.Cancel();
         }
 
         public void Dispose()
@@ -100,7 +100,7 @@ namespace FiresharpCore.Response
 
             if (disposing)
             {
-                _cancel.Dispose();
+                CancellationToken.Dispose();
             }
         }
     }

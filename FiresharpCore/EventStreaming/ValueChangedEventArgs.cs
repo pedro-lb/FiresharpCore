@@ -6,9 +6,9 @@ namespace FiresharpCore.EventStreaming
     {
         public ValueChangedEventArgs(string path, string data, string oldData)
         {
+            OldData = oldData;
             Path = path;
             Data = data;
-            OldData = oldData;
         }
 
         public string Path { get; private set; }

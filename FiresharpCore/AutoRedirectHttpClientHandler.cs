@@ -8,26 +8,26 @@ namespace FiresharpCore
 {
     internal class AutoRedirectHttpClientHandler : DelegatingHandler
     {
-        private int _maximumAutomaticRedirections;
-
-        public int MaximumAutomaticRedirections
+        private int MaximumAutomaticRedirections
         {
             get
             {
-                return _maximumAutomaticRedirections;
+                return _MaximumAutomaticRedirections;
             }
             set
             {
-                _maximumAutomaticRedirections = Math.Max(1, value);
+                _MaximumAutomaticRedirections = Math.Max(1, value);
             }
         }
+
+        public int _MaximumAutomaticRedirections { get; set; }
 
         public AutoRedirectHttpClientHandler()
         {
             var handler = new HttpClientHandler { AllowAutoRedirect = false };
 
-            InnerHandler = handler;
             MaximumAutomaticRedirections = handler.MaxAutomaticRedirections;
+            InnerHandler = handler;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

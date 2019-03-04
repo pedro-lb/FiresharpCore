@@ -6,24 +6,24 @@ namespace FiresharpCore
 {
     public class QueryBuilder
     {
-        private static Dictionary<string, object> _query = new Dictionary<string, object>();
-        private readonly string _initialQuery;
+        private static Dictionary<string, object> InternalQuery = new Dictionary<string, object>();
+        private readonly string InitialQuery;
 
-        private string limitToFirstParam = "limitToFirst";
-        private string limitToLastParam = "limitToLast";
-        private string shallowParam = "shallow";
-        private string orderByParam = "orderBy";
-        private string startAtParam = "startAt";
-        private string equalToParam = "equalTo";
-        private string formatParam = "format";
-        private string printParam = "print";
-        private string endAtParam = "endAt";
-        private string formatVal = "export";
+        private readonly string LimitToFirstParam = "limitToFirst";
+        private readonly string LimitToLastParam = "limitToLast";
+        private readonly string ShallowParam = "shallow";
+        private readonly string OrderByParam = "orderBy";
+        private readonly string StartAtParam = "startAt";
+        private readonly string EqualToParam = "equalTo";
+        private readonly string FormatParam = "format";
+        private readonly string PrintParam = "print";
+        private readonly string EndAtParam = "endAt";
+        private readonly string FormatVal = "export";
 
         private QueryBuilder(string initialQuery = "")
         {
-            _initialQuery = initialQuery;
-            _query = new Dictionary<string, object>();
+            InitialQuery = initialQuery;
+            InternalQuery = new Dictionary<string, object>();
         }
 
         public static QueryBuilder New(string initialQuery = "")
@@ -33,68 +33,68 @@ namespace FiresharpCore
 
         public QueryBuilder StartAt(string value)
         {
-            return AddToQueryDictionary(startAtParam, value);
+            return AddToQueryDictionary(StartAtParam, value);
         }
 
         public QueryBuilder StartAt(long value)
         {
-            return AddToQueryDictionary(startAtParam, value);
+            return AddToQueryDictionary(StartAtParam, value);
         }
 
         public QueryBuilder EndAt(string value)
         {
-            return AddToQueryDictionary(endAtParam, value);
+            return AddToQueryDictionary(EndAtParam, value);
         }
 
         public QueryBuilder EndAt(long value)
         {
-            return AddToQueryDictionary(endAtParam, value);
+            return AddToQueryDictionary(EndAtParam, value);
         }
 
         public QueryBuilder EqualTo(string value)
         {
-            return AddToQueryDictionary(equalToParam, value);
+            return AddToQueryDictionary(EqualToParam, value);
         }
 
         public QueryBuilder OrderBy(string value)
         {
-            return AddToQueryDictionary(orderByParam, value);
+            return AddToQueryDictionary(OrderByParam, value);
         }
 
         public QueryBuilder LimitToFirst(int value)
         {
-            return AddToQueryDictionary(limitToFirstParam, value > 0 ? value.ToString() : string.Empty, skipEncoding: true);
+            return AddToQueryDictionary(LimitToFirstParam, value > 0 ? value.ToString() : string.Empty, skipEncoding: true);
         }
 
         public QueryBuilder LimitToLast(int value)
         {
-            return AddToQueryDictionary(limitToLastParam, value > 0 ? value.ToString() : string.Empty, skipEncoding: true);
+            return AddToQueryDictionary(LimitToLastParam, value > 0 ? value.ToString() : string.Empty, skipEncoding: true);
         }
 
         public QueryBuilder Shallow(bool value)
         {
-            return AddToQueryDictionary(shallowParam, value ? "true" : string.Empty, skipEncoding: true);
+            return AddToQueryDictionary(ShallowParam, value ? "true" : string.Empty, skipEncoding: true);
         }
 
         public QueryBuilder Print(string value)
         {
-            return AddToQueryDictionary(printParam, value, skipEncoding: true);
+            return AddToQueryDictionary(PrintParam, value, skipEncoding: true);
         }
 
         public QueryBuilder IncludePriority(bool value)
         {
-            return AddToQueryDictionary(formatParam, value ? formatVal : string.Empty, skipEncoding: true);
+            return AddToQueryDictionary(FormatParam, value ? FormatVal : string.Empty, skipEncoding: true);
         }
 
         private QueryBuilder AddToQueryDictionary(string parameterName, string value, bool skipEncoding = false)
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
-                _query.Add(parameterName, skipEncoding ? value : EscapeString(value));
+                InternalQuery.Add(parameterName, skipEncoding ? value : EscapeString(value));
             }
             else
             {
-                _query.Remove(startAtParam);
+                InternalQuery.Remove(StartAtParam);
             }
 
             return this;
@@ -102,7 +102,7 @@ namespace FiresharpCore
 
         private QueryBuilder AddToQueryDictionary(string parameterName, long value)
         {
-            _query.Add(parameterName, value);
+            InternalQuery.Add(parameterName, value);
             return this;
         }
 
@@ -113,14 +113,14 @@ namespace FiresharpCore
 
         public string ToQueryString()
         {
-            if (!_query.Any() && !string.IsNullOrEmpty(_initialQuery))
+            if (!InternalQuery.Any() && !string.IsNullOrEmpty(InitialQuery))
             {
-                return _initialQuery;
+                return InitialQuery;
             }
 
-            return !string.IsNullOrEmpty(_initialQuery)
-                ? $"{_initialQuery}&{string.Join("&", _query.Select(pair => $"{pair.Key}={pair.Value}").ToArray())}"
-                : string.Join("&", _query.Select(pair => $"{pair.Key}={pair.Value}").ToArray());
+            return !string.IsNullOrEmpty(InitialQuery)
+                ? $"{InitialQuery}&{string.Join("&", InternalQuery.Select(pair => $"{pair.Key}={pair.Value}").ToArray())}"
+                : string.Join("&", InternalQuery.Select(pair => $"{pair.Key}={pair.Value}").ToArray());
         }
     }
 }

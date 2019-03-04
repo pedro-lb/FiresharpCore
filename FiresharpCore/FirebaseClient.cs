@@ -163,7 +163,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, data).Result)
+                using (var response = RequestManager.RequestAsync(FiresharpCore.RequestManager.PatchMethod, path, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -183,7 +183,7 @@ namespace FiresharpCore
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
 
-                using (var response = RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, queryBuilder, data).Result)
+                using (var response = RequestManager.RequestAsync(FiresharpCore.RequestManager.PatchMethod, path, queryBuilder, data).Result)
                 {
                     var content = response.Content.ReadAsStringAsync().Result;
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -311,7 +311,7 @@ namespace FiresharpCore
         {
             try
             {
-                using (var response = await RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, data).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(FiresharpCore.RequestManager.PatchMethod, path, data).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);
@@ -331,7 +331,7 @@ namespace FiresharpCore
             {
                 var queryBuilder = QueryBuilder.New().Print(print);
 
-                using (var response = await RequestManager.RequestAsync(FiresharpCore.RequestManager.Patch, path, queryBuilder, data).ConfigureAwait(false))
+                using (var response = await RequestManager.RequestAsync(FiresharpCore.RequestManager.PatchMethod, path, queryBuilder, data).ConfigureAwait(false))
                 {
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     HandleIfErrorResponse(response.StatusCode, content);

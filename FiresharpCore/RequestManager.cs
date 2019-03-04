@@ -9,29 +9,31 @@ namespace FiresharpCore
 {
     internal class RequestManager : IRequestManager
     {
-        internal static readonly HttpMethod Patch = new HttpMethod("PATCH");
+        internal static readonly HttpMethod PatchMethod = new HttpMethod("PATCH");
 
-        private readonly IFirebaseConfig _config;
-        private readonly HttpClient _httpClient;
+        private readonly IFirebaseConfig FirebaseConfig;
+
+        private readonly HttpClient HttpClient;
 
         internal RequestManager(IFirebaseConfig config)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            FirebaseConfig = config ?? throw new ArgumentNullException(nameof(config));
 
-            _httpClient = new HttpClient(new AutoRedirectHttpClientHandler());
+            HttpClient = new HttpClient(new AutoRedirectHttpClientHandler());
 
-            var basePath = _config.BasePath.EndsWith("/") ? _config.BasePath : _config.BasePath + "/";
-            _httpClient.BaseAddress = new Uri(basePath);
+            var basePath = FirebaseConfig.BasePath.EndsWith("/") ? FirebaseConfig.BasePath : FirebaseConfig.BasePath + "/";
 
-            if (_config.RequestTimeout.HasValue)
+            HttpClient.BaseAddress = new Uri(basePath);
+
+            if (FirebaseConfig.RequestTimeout.HasValue)
             {
-                _httpClient.Timeout = _config.RequestTimeout.Value;
+                HttpClient.Timeout = FirebaseConfig.RequestTimeout.Value;
             }
         }
 
         public void Dispose()
         {
-            _httpClient.Dispose();
+            HttpClient.Dispose();
         }
 
         public async Task<HttpResponseMessage> ListenAsync(string path)
@@ -91,7 +93,7 @@ namespace FiresharpCore
 
         private HttpClient GetClient()
         {
-            return _httpClient;
+            return HttpClient;
         }
 
         private HttpClient PrepareEventStreamRequest(string path, QueryBuilder queryBuilder, out HttpRequestMessage request)
@@ -102,9 +104,9 @@ namespace FiresharpCore
             request = new HttpRequestMessage(HttpMethod.Get, uri);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
 
-            if (!string.IsNullOrEmpty(_config.AccessToken))
+            if (!string.IsNullOrEmpty(FirebaseConfig.AccessToken))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _config.AccessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", FirebaseConfig.AccessToken);
             }
 
             return client;
@@ -116,12 +118,12 @@ namespace FiresharpCore
 
             if (payload != null)
             {
-                request.Content = new StringContent(payload as string ?? _config.Serializer.Serialize(payload));
+                request.Content = new StringContent(payload as string ?? FirebaseConfig.Serializer.Serialize(payload));
             }
 
-            if (!string.IsNullOrEmpty(_config.AccessToken))
+            if (!string.IsNullOrEmpty(FirebaseConfig.AccessToken))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _config.AccessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", FirebaseConfig.AccessToken);
             }
 
             return request;
@@ -129,8 +131,8 @@ namespace FiresharpCore
 
         private Uri PrepareUri(string path, QueryBuilder queryBuilder)
         {
-            var authToken = !string.IsNullOrWhiteSpace(_config.AuthSecret)
-                ? $"{path}.json?auth={_config.AuthSecret}"
+            var authToken = !string.IsNullOrWhiteSpace(FirebaseConfig.AuthSecret)
+                ? $"{path}.json?auth={FirebaseConfig.AuthSecret}"
                 : $"{path}.json?";
 
             var queryStr = string.Empty;
@@ -140,14 +142,14 @@ namespace FiresharpCore
                 queryStr = $"&{queryBuilder.ToQueryString()}";
             }
 
-            var url = $"{_config.BasePath}{authToken}{queryStr}";
+            var url = $"{FirebaseConfig.BasePath}{authToken}{queryStr}";
 
             return new Uri(url);
         }
 
         private Uri PrepareApiUri(string path, QueryBuilder queryBuilder)
         {
-            string uriString = $"https://auth.firebase.com/v2/{_config.Host}/{path}?{queryBuilder.ToQueryString()}";
+            string uriString = $"https://auth.firebase.com/v2/{FirebaseConfig.Host}/{path}?{queryBuilder.ToQueryString()}";
             return new Uri(uriString);
         }
     }

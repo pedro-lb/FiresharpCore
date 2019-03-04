@@ -11,9 +11,8 @@ namespace FiresharpCore.Response
 {
     public class EventStreamResponse : IDisposable
     {
-        private readonly TemporaryCache _cache;
-        private readonly CancellationTokenSource _cancel;
-
+        private CancellationTokenSource CancellationToken { get; }
+        private TemporaryCache TemporaryCache { get; }
         public Task PollingTask { get; }
 
         internal EventStreamResponse(
@@ -24,28 +23,28 @@ namespace FiresharpCore.Response
             object context = null
         )
         {
-            _cancel = new CancellationTokenSource();
+            CancellationToken = new CancellationTokenSource();
 
-            _cache = new TemporaryCache();
+            TemporaryCache = new TemporaryCache();
 
             if (added != null)
             {
-                _cache.Added += added;
+                TemporaryCache.Added += added;
             }
             if (changed != null)
             {
-                _cache.Changed += changed;
+                TemporaryCache.Changed += changed;
             }
             if (removed != null)
             {
-                _cache.Removed += removed;
+                TemporaryCache.Removed += removed;
             }
             if (context != null)
             {
-                _cache.Context = context;
+                TemporaryCache.Context = context;
             }
 
-            PollingTask = ReadLoop(httpResponse, _cancel.Token);
+            PollingTask = ReadLoop(httpResponse, CancellationToken.Token);
         }
 
         ~EventStreamResponse()
@@ -100,7 +99,7 @@ namespace FiresharpCore.Response
 
         public void Cancel()
         {
-            _cancel.Cancel();
+            CancellationToken.Cancel();
         }
 
         private void Update(string eventName, string p)
@@ -119,11 +118,11 @@ namespace FiresharpCore.Response
 
                         if (eventName == "put")
                         {
-                            _cache.Replace(path, ReadToNamedPropertyValue(reader, "data"));
+                            TemporaryCache.Replace(path, ReadToNamedPropertyValue(reader, "data"));
                         }
                         else
                         {
-                            _cache.Update(path, ReadToNamedPropertyValue(reader, "data"));
+                            TemporaryCache.Update(path, ReadToNamedPropertyValue(reader, "data"));
                         }
                     }
                     break;
@@ -159,8 +158,8 @@ namespace FiresharpCore.Response
 
             if (disposing)
             {
-                _cache.Dispose();
-                _cancel.Dispose();
+                TemporaryCache.Dispose();
+                CancellationToken.Dispose();
             }
         }
     }

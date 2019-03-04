@@ -8,10 +8,11 @@ namespace FiresharpCore.EventStreaming
 {
     internal sealed class TemporaryCache : IDisposable
     {
-        private readonly LinkedList<SimpleCacheItem> _pathFromRootList = new LinkedList<SimpleCacheItem>();
-        private readonly char[] _seperator = { '/' };
+        private readonly LinkedList<SimpleCacheItem> PathFromRootList = new LinkedList<SimpleCacheItem>();
 
-        private readonly object _treeLock = new object();
+        private readonly object TreeLock = new object();
+
+        private readonly char[] Separator = { '/' };
 
         public object Context = null;
 
@@ -32,7 +33,7 @@ namespace FiresharpCore.EventStreaming
 
         public void Replace(string path, JsonReader data)
         {
-            lock (_treeLock)
+            lock (TreeLock)
             {
                 var root = FindRoot(path);
                 Replace(root, data);
@@ -41,7 +42,7 @@ namespace FiresharpCore.EventStreaming
 
         public void Update(string path, JsonReader data)
         {
-            lock (_treeLock)
+            lock (TreeLock)
             {
                 var root = FindRoot(path);
                 UpdateChildren(root, data);
@@ -50,7 +51,7 @@ namespace FiresharpCore.EventStreaming
 
         private SimpleCacheItem FindRoot(string path)
         {
-            var segments = path.Split(_seperator, StringSplitOptions.RemoveEmptyEntries);
+            var segments = path.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
             return segments.Aggregate(Root, GetNamedChild);
         }
@@ -156,22 +157,22 @@ namespace FiresharpCore.EventStreaming
             while (root.Name != null)
             {
                 size += root.Name.Length + 1;
-                _pathFromRootList.AddFirst(root);
+                PathFromRootList.AddFirst(root);
                 root = root.Parent;
             }
 
-            if (_pathFromRootList.Count == 0)
+            if (PathFromRootList.Count == 0)
             {
                 return "/";
             }
 
             var sb = new StringBuilder(size);
-            foreach (var d in _pathFromRootList)
+            foreach (var d in PathFromRootList)
             {
                 sb.Append($"/{d.Name}");
             }
 
-            _pathFromRootList.Clear();
+            PathFromRootList.Clear();
 
             return sb.ToString();
         }
