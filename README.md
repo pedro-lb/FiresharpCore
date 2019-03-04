@@ -14,15 +14,11 @@ This library uses [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) 
 ------------------------------
 
 ```csharp
-  IFirebaseConfig config = new FirebaseConfig
-  {
-     AuthSecret = "your_firebase_secret",
-     BasePath = "https://yourfirebase.firebaseio.com/"
-  };
-````
-```csharp
-IFirebaseClient  client = new FirebaseClient(config);
+  FiresharpFactory.Configure("https://yourfirebase.firebaseio.com/", "your_firebase_secret");
+
+  var firebaseApp = FiresharpFactory.Create();
 ```
+
 So far, supported methods are :
 
 #### Set
